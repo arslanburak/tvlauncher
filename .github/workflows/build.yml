@@ -29,3 +29,14 @@ jobs:
         run: |
           gh release view apk >/dev/null 2>&1 || gh release create apk --title "PiLauncher (son sürüm)" --notes "Her derlemede en yeni APK ile güncellenir."
           gh release upload apk TvLauncher/app/build/outputs/apk/debug/app-debug.apk --clobber
+      # PiKanal (deneme TV uygulaması): ayrı APK, aynı sabit sürüme pikanal.apk adıyla
+      # https://github.com/arslanburak/tvlauncher/releases/download/apk/pikanal.apk
+      - run: unzip -o PiKanal.zip
+      - run: gradle assembleDebug --no-daemon
+        working-directory: PiKanal
+      - name: PiKanal'ı sabit linke yükle
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp PiKanal/app/build/outputs/apk/debug/app-debug.apk pikanal.apk
+          gh release upload apk pikanal.apk --clobber
